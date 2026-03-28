@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://interviewforge-5m9t.onrender.com/"  
+        "https://interviewforge-5m9t.onrender.com" 
     ],
     credentials: true
 }));
