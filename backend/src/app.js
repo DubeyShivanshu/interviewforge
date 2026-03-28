@@ -8,7 +8,8 @@ const cookieParser = require('cookie-parser');
 //Enable CORS
 app.use(cors({
     origin: [
-        "http://localhost:5173" 
+        "http://localhost:5173",
+        "https://interviewforge-theta.vercel.app"
     ],
     credentials: true
 }));
