@@ -9,52 +9,32 @@ const api = axios.create({
 //APIs to interact with backend APIs
 //API: Register user
 export async function register({username, email, password}){
-    try{
-        const response = await api.post("/api/auth/register", {    //reusing
+    const response = await api.post("/api/auth/register", {    //reusing
         username, email, password
-        })
+    })
 
-        return response.data;
-
-    } catch(err){
-        console.error("Registration failed:", err);
-    }
+    return response.data;
 }
 
 //API: Login user
 export async function login({email, password}){
-    try{
-        const response = await api.post("/api/auth/login", {
+    const response = await api.post("/api/auth/login", {
             email, password
-        })
+    })
 
-        return response.data;
-
-    } catch(err){
-        console.error("Login failed:", err);
-    }
+    return response.data;
 }
 
 //API: Logout user
 export async function logout(){
-    try{
-        const response = await api.get("/api/auth/logout")
+    const response = await api.get("/api/auth/logout")
 
-        return response.data;
-
-    } catch(err){
-        console.error("Logout failed:", err)
-    }
+    return response.data;
 }
 
 //API: Get(getMe) current user
 export async function getMe(){
-    try{
-        const response = await api.get("/api/auth/get-me")
+    const response = await api.get("/api/auth/get-me")
 
-        return response.data;
-
-    } catch(err){
-        console.error(err)
-    }
+    return response.data;
 }

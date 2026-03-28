@@ -80,7 +80,11 @@ async function loginUserController(req, res){
         {expiresIn: '1h'}
     );
     //store the token in cookie
-    res.cookie('token', token).status(200).json({message: 'User logged in successfully',
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none' 
+    }).status(200).json({message: 'User logged in successfully',
         token,
         user: {
             id: user._id,
