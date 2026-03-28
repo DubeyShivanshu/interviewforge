@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 app.use(cors({
     origin: [
         "http://localhost:5173",
-        "https://interviewforge-5m9t.onrender.com" 
+        "https://interviewforge-vert.vercel.app" 
     ],
     credentials: true
 }));
@@ -27,9 +27,5 @@ const interviewRouter = require('./routes/interview.routes');
 //Use required routes with appropriate base paths
 app.use('/api/auth', authRouter);
 app.use('/api/interview', interviewRouter);
-
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
 
 module.exports = app;
