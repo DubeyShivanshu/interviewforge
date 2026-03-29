@@ -104,7 +104,7 @@ interviewforge/
 
 - **🔐 Authentication** — Register, login, logout with JWT. Protected routes on both frontend and backend.
 - **📄 Resume Upload** — Upload a PDF resume; text is extracted and sent to the AI.
-- **🤖 AI Interview Report** — Generates using Gemini 2.5 Flash:
+- **🤖 AI Interview Report** — Generates using Gemini 2.0 Flash:
   - Match Score (0–100)
   - 5 Technical Questions with intention and model answer
   - 4 Behavioral Questions with STAR method answers
