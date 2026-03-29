@@ -23,6 +23,11 @@ export const useInterview = () => {
             setReport(response.interviewReport)
             return response.interviewReport
         } catch(err){
+            if (err.response?.status === 429) {
+                alert("AI quota exceeded. Please try again tomorrow.")
+            } else {
+                alert("Something went wrong generating the PDF. Please try again.")
+            }
             console.error(err)
         } finally{
             setLoading(false)
@@ -55,11 +60,31 @@ export const useInterview = () => {
         }
     }
 
-    const getResumePdf = async({interviewReportId}) => {
+    // const getResumePdf = async({interviewReportId}) => {
+    //     setPdfLoading(true)
+    //     try{
+    //         const response = await generateResumePdf({ interviewReportId })
+    //         const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
+    //         const link = document.createElement("a")
+    //         link.href = url
+    //         link.setAttribute("download", `resume_${interviewReportId}.pdf`)
+    //         document.body.appendChild(link)
+    //         link.click()
+    //         document.body.removeChild(link)
+    //         window.URL.revokeObjectURL(url)
+    //     } catch(err){
+    //         console.error(err)
+    //     } finally{
+    //         setPdfLoading(false)
+    //     }
+    // }
+
+    const getResumePdf = async ({ interviewReportId }) => {
         setPdfLoading(true)
-        try{
-            const response = await generateResumePdf({ interviewReportId })
-            const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
+        try {
+            const blob = await generateResumePdf({ interviewReportId })  // already a Blob
+
+            const url = window.URL.createObjectURL(blob)
             const link = document.createElement("a")
             link.href = url
             link.setAttribute("download", `resume_${interviewReportId}.pdf`)
@@ -67,9 +92,14 @@ export const useInterview = () => {
             link.click()
             document.body.removeChild(link)
             window.URL.revokeObjectURL(url)
-        } catch(err){
+        } catch(err) {
+            if (err.response?.status === 429) {
+                alert("AI quota exceeded. Please try again tomorrow.")
+            } else {
+                alert("Something went wrong generating the PDF. Please try again.")
+            }
             console.error(err)
-        } finally{
+        } finally {
             setPdfLoading(false)
         }
     }
