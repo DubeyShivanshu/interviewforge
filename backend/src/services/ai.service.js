@@ -160,7 +160,7 @@ async function generateInterviewReport({ resume, selfDescription, jobDescription
     `
 
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",   
+        model: "gemini-2.0-flash",   
         contents: prompt,
         config: {
             responseMimeType: "application/json",  
@@ -226,7 +226,7 @@ async function generateResumePdf({resume, selfDescription, jobDescription}){
                     The resume should not be so lengthy, it should ideally be 1-2 pages long when converted to PDF. Focus on quality rather than quantity and make sure to include all the relevant information that can increase the candidate's chances of getting an interview call for the given job description.
                     `
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "gemini-2.0-flash",
         contents: prompt,
         config: {
             responseMimeType: "application/json",
