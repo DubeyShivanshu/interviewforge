@@ -42,7 +42,11 @@ async function registerUserController(req, res){
         {expiresIn: '1h'});
     
     //store the token in cookie
-    res.cookie('token', token).status(201).json({message: 'User registered successfully',
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none'
+    }).status(201).json({message: 'User registered successfully',
         user: {
             id: user._id,
             username: user.username,

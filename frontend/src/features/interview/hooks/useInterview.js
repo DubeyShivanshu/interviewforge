@@ -26,7 +26,7 @@ export const useInterview = () => {
             if (err.response?.status === 429) {
                 alert("AI quota exceeded. Please try again tomorrow.")
             } else {
-                alert("Something went wrong generating the PDF. Please try again.")
+                alert("Something went wrong generating the report. Please try again.")
             }
             console.error(err)
         } finally{
