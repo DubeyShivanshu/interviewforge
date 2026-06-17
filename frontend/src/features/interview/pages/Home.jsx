@@ -111,7 +111,7 @@ e.g. "Senior Frontend Engineer at Google requires proficiency in React, TypeScri
                         />
                     </div>
 
-                    {/* F2 FIX: disabled while loading to prevent multiple simultaneous requests */}
+                    {/* disabled while loading to prevent multiple simultaneous requests */}
                     <button
                         className={`generate-btn${loading ? ' generate-btn--loading' : ''}`}
                         onClick={handleGenerateReport}

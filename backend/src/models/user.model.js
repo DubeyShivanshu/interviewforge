@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
         required: [true, 'Email is required'],
         trim: true,
         lowercase: true,
-        // B5 FIX: enforce valid email format at schema level
+        //enforce valid email format at schema level
         match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please provide a valid email address']
     },
     password: {

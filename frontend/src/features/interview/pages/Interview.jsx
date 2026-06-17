@@ -97,7 +97,7 @@ const Interview = () => {
             </p>
           </header>
           <div className="content-section__list">
-            {report.technicalQuestions.map((q, i) => (  /* ✅ data → report */
+            {report.technicalQuestions.map((q, i) => (  
               <QuestionCard key={i} item={q} index={i} />
             ))}
           </div>
@@ -116,7 +116,7 @@ const Interview = () => {
             </p>
           </header>
           <div className="content-section__list">
-            {report.behavioralQuestions.map((q, i) => (  /* ✅ data → report */
+            {report.behavioralQuestions.map((q, i) => (  
               <QuestionCard key={i} item={q} index={i} />
             ))}
           </div>

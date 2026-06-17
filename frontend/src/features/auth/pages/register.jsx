@@ -18,8 +18,7 @@ const Register = () => {
         
         const success = await handleRegister({ username, email, password });
 
-        // F5 FIX: backend already sets the auth cookie on register,
-        // so navigate directly to home instead of forcing a second login
+        //backend already sets the auth cookie on register, so navigate directly to home instead of forcing a second login
         if(success){
             navigate("/");
         }

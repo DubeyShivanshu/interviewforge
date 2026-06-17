@@ -7,7 +7,7 @@ const interviewReportModel = require("../models/interviewReport.model")
  */
 async function generateInterviewReportController(req, res){
     try {
-        // B1 FIX: guard against missing file upload
+        //guard against missing file upload
         if (!req.file) {
             return res.status(400).json({ message: "Please upload a PDF resume." })
         }
@@ -109,7 +109,7 @@ async function generateResumePdfController(req, res) {
     try{
         const { interviewReportId } = req.params
 
-        // B2 FIX: ownership check — only the owner can generate their resume PDF
+        //ownership check — only the owner can generate their resume PDF
         const interviewReport = await interviewReportModel.findOne({
             _id: interviewReportId,
             user: req.user.id
