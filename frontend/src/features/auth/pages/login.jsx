@@ -6,7 +6,7 @@ import {useAuth} from "../hooks/useAuth"
 
 const Login = () => {
 
-    const {loading, handleLogin} = useAuth()
+    const {loading, handleLogin, authError} = useAuth()
 
     //to navigate to homepage after login
     const navigate = useNavigate();
@@ -62,6 +62,8 @@ const Login = () => {
                             placeholder='Enter your password' 
                         />
                     </div>
+
+                    {authError && <p className="error-msg">{authError}</p>}
 
                     <button type="submit" className="button primary-button" disabled={loading}>
                         Login

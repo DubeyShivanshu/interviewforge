@@ -25,6 +25,8 @@ export const useInterview = () => {
         } catch(err){
             if (err.response?.status === 429) {
                 alert("AI quota exceeded. Please try again tomorrow.")
+            } else if (err.response?.status === 503) {
+                alert("AI model is busy right now. Please try again in a moment.")
             } else {
                 alert("Something went wrong generating the report. Please try again.")
             }
@@ -60,25 +62,6 @@ export const useInterview = () => {
         }
     }
 
-    // const getResumePdf = async({interviewReportId}) => {
-    //     setPdfLoading(true)
-    //     try{
-    //         const response = await generateResumePdf({ interviewReportId })
-    //         const url = window.URL.createObjectURL(new Blob([ response ], { type: "application/pdf" }))
-    //         const link = document.createElement("a")
-    //         link.href = url
-    //         link.setAttribute("download", `resume_${interviewReportId}.pdf`)
-    //         document.body.appendChild(link)
-    //         link.click()
-    //         document.body.removeChild(link)
-    //         window.URL.revokeObjectURL(url)
-    //     } catch(err){
-    //         console.error(err)
-    //     } finally{
-    //         setPdfLoading(false)
-    //     }
-    // }
-
     const getResumePdf = async ({ interviewReportId }) => {
         setPdfLoading(true)
         try {
@@ -95,6 +78,8 @@ export const useInterview = () => {
         } catch(err) {
             if (err.response?.status === 429) {
                 alert("AI quota exceeded. Please try again tomorrow.")
+            } else if (err.response?.status === 503) {
+                alert("AI model is busy right now. Please try again in a moment.")
             } else {
                 alert("Something went wrong generating the PDF. Please try again.")
             }

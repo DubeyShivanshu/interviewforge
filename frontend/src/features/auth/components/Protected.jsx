@@ -5,11 +5,11 @@ import {useAuth} from '../hooks/useAuth';
 const Protected = ({children}) => {
     const {loading, user} = useAuth();
 
-    //If auth status is still loading, show a loading message
+    //If auth status is still loading, show a spinner
     if(loading){
         return(
-            <div className='flex items-center justify-center h-screen'>
-                <p className='text-2xl font-bold'>Loading...</p>
+            <div className='spinner-overlay'>
+                <div className='spinner'></div>
             </div>
         )
     }

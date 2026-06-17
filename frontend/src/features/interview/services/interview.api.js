@@ -5,7 +5,7 @@ const api = axios.create({
     withCredentials: true,
 })
 
-//attach JWT token to every request
+//attach JWT token to every request (if stored in localStorage)
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token")
     if (token) {
@@ -13,6 +13,18 @@ api.interceptors.request.use((config) => {
     }
     return config
 })
+
+// F3 FIX: 401 response interceptor — redirect to /login when session expires
+// Previously, expired sessions caused silent console errors with no UX feedback
+api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response?.status === 401) {
+            window.location.href = "/login"
+        }
+        return Promise.reject(error)
+    }
+)
 
 //Sending a req to your backend API to generate an interview report
 export const generateInterviewReport = async ({jobDescription, selfDescription, resumeFile}) => {

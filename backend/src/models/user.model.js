@@ -4,16 +4,23 @@ const userSchema = new mongoose.Schema({
     username: {
         type: String,
         unique: [true, 'Username already exists'],
-        required: [true, 'Username is required']
+        required: [true, 'Username is required'],
+        trim: true,
+        minlength: [3, 'Username must be at least 3 characters']
     },
     email: {
         type: String,
         unique: [true, 'Email already exists'],
-        required: [true, 'Email is required']
+        required: [true, 'Email is required'],
+        trim: true,
+        lowercase: true,
+        // B5 FIX: enforce valid email format at schema level
+        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please provide a valid email address']
     },
     password: {
         type: String,
-        required: [true, 'Password is required']
+        required: [true, 'Password is required'],
+        minlength: [6, 'Password must be at least 6 characters']
     }
 });
 

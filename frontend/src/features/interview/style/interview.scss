@@ -119,11 +119,6 @@ $severity-low-text:   #58d4b4;
         content: '';
         display: flex;
     }
-
-    // row of dots wrapper trick — just render them inline
-    .loading-state__dot {
-        // already handles stagger above
-    }
 }
 
 // make dots appear in a row by wrapping Interview.jsx dots in a flex row
@@ -148,6 +143,37 @@ $severity-low-text:   #58d4b4;
     z-index: 2;
     animation: fadeUp 0.4s ease both;
     overflow-y: auto;  
+}
+
+// Back button
+.iv-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: transparent;
+    border: none;
+    color: $text-muted;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 0.25rem 0;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s ease;
+    align-self: flex-start;
+
+    svg {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.2s ease;
+    }
+
+    &:hover {
+        color: $text-primary;
+        
+        svg {
+            transform: translateX(-4px);
+        }
+    }
 }
 
 // Match score
@@ -355,6 +381,28 @@ $severity-low-text:   #58d4b4;
 
     &:hover {
         box-shadow: 0 8px 32px $accent-glow;
+    }
+}
+
+// Logout button in sidebar
+.iv-logout-btn {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    border: 1px solid $border;
+    border-radius: 0.65rem;
+    background: transparent;
+    color: $text-muted;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+
+    &:hover {
+        color: #ff5e5e;
+        border-color: rgba(255, 94, 94, 0.35);
+        background: rgba(255, 94, 94, 0.07);
     }
 }
 

@@ -82,6 +82,49 @@ $text-dim:     #2e3446;
 
 }
 
+// Top navigation bar (brand name left + logout right)
+.home-topbar {
+    position: absolute;
+    top: 1.25rem;
+    left: 2rem;
+    right: 2rem;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: fadeUp 0.35s ease both;
+
+    &__brand {
+        font-family: 'Syne', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: $accent;
+        opacity: 0.75;
+    }
+
+    &__logout {
+        font-family: 'DM Mono', monospace;
+        font-size: 0.67rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: $text-muted;
+        background: transparent;
+        border: 1px solid $border;
+        border-radius: 6px;
+        padding: 0.38rem 0.85rem;
+        cursor: pointer;
+        transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+
+        &:hover {
+            color: #ff5e5e;
+            border-color: rgba(255, 94, 94, 0.35);
+            background: rgba(255, 94, 94, 0.07);
+        }
+    }
+}
+
 .page-title {
     font-size: clamp(2rem, 2.8vw, 3.6rem);
     font-weight: 800;

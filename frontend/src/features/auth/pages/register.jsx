@@ -11,15 +11,17 @@ const Register = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    const {loading, handleRegister} = useAuth()
+    const {loading, handleRegister, authError} = useAuth()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         
         const success = await handleRegister({ username, email, password });
 
+        // F5 FIX: backend already sets the auth cookie on register,
+        // so navigate directly to home instead of forcing a second login
         if(success){
-            navigate("/login");
+            navigate("/");
         }
     }
 
@@ -72,6 +74,8 @@ const Register = () => {
                             placeholder='Enter your password' 
                         />
                     </div>
+
+                    {authError && <p className="error-msg">{authError}</p>}
 
                     <button type="submit" className="button primary-button" disabled={loading}>
                         Register

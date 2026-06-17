@@ -3,6 +3,7 @@ import {useState, useRef} from "react"
 import "../style/home.scss";
 import {useInterview} from "../hooks/useInterview.js"
 import {useNavigate} from "react-router-dom"
+import {useAuth} from "../../auth/hooks/useAuth"
 
 const Home = () => {
 
@@ -13,13 +14,29 @@ const Home = () => {
     const resumeInputRef = useRef()
 
     const navigate = useNavigate()
+    const { handleLogout } = useAuth()
+
+    const doLogout = async () => {
+        await handleLogout()
+        navigate("/login")
+    }
 
     const handleGenerateReport = async() => {
         const resumeFile = resumeInputRef.current.files[0]
-        const data = await generateReport({jobDescription, selfDescription, resumeFile})
-        //navigate(`/interview/${data._id}`)
 
-        if (data?._id) {                          // guard against undefined
+        // validate before firing the expensive AI call
+        if (!jobDescription.trim()) {
+            alert("Please enter a job description.")
+            return
+        }
+        if (!resumeFile) {
+            alert("Please upload your resume (PDF).")
+            return
+        }
+
+        const data = await generateReport({jobDescription, selfDescription, resumeFile})
+
+        if (data?._id) {
             navigate(`/interview/${data._id}`)
         }
     }
@@ -36,6 +53,14 @@ const Home = () => {
 
     return ( 
         <main className='home'>
+
+            {/* Top bar — brand left, logout right */}
+            <nav className="home-topbar">
+                <span className="home-topbar__brand">InterviewForge</span>
+                <button className="home-topbar__logout" onClick={doLogout}>
+                    Logout
+                </button>
+            </nav>
 
             {/* Page Header */}
             <header className="page-header">
@@ -82,12 +107,17 @@ e.g. "Senior Frontend Engineer at Google requires proficiency in React, TypeScri
                             onChange={(e)=>{setSelfDescription(e.target.value)}}
                             name='selfDescription' 
                             id='selfDescription' 
-                            placeholder='Briefly describe your experience, key skills, and years of experience if you don’t have a resume handy...'
+                            placeholder="Briefly describe your experience, key skills, and years of experience if you don't have a resume handy..."
                         />
                     </div>
 
-                    <button className='generate-btn' onClick={handleGenerateReport}>
-                        Generate Interview Report
+                    {/* F2 FIX: disabled while loading to prevent multiple simultaneous requests */}
+                    <button
+                        className={`generate-btn${loading ? ' generate-btn--loading' : ''}`}
+                        onClick={handleGenerateReport}
+                        disabled={loading}
+                    >
+                        {loading ? 'Generating...' : 'Generate Interview Report'}
                     </button>
                 </div>
             </div>

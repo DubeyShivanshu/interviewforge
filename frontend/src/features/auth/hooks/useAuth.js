@@ -1,4 +1,4 @@
-import {useContext} from "react"
+import {useContext, useState} from "react"
 import {AuthContext} from "../context/auth.context"
 import {login, logout, register} from "../services/auth.api.js"
 
@@ -7,10 +7,13 @@ export const useAuth = () => {
     const context = useContext(AuthContext)
     const {user, setUser, loading, setLoading} = context
 
+    const [authError, setAuthError] = useState(null)
+
     //hook: Login user
     const handleLogin  = async ({email, password}) => {
         try{
             setLoading(true)
+            setAuthError(null)
             const data = await login({email, password})
             if(data){
                 setUser(data.user)
@@ -18,7 +21,8 @@ export const useAuth = () => {
             } 
         }
         catch(err){
-            console.error("Login failed", err.response?.data?.message)
+            const msg = err.response?.data?.message || "Login failed. Please try again."
+            setAuthError(msg)
             return false
         }
         finally{
@@ -30,6 +34,7 @@ export const useAuth = () => {
     const handleRegister = async({username, email, password}) => {
         try{
             setLoading(true)
+            setAuthError(null)
             const data = await register({username, email, password})
             if(data){
                 setUser(data.user)
@@ -37,7 +42,8 @@ export const useAuth = () => {
             } 
         }
         catch(err){
-            console.error("Register failed", err.response?.data?.message)
+            const msg = err.response?.data?.message || "Registration failed. Please try again."
+            setAuthError(msg)
             return false
         }
         finally{
@@ -60,22 +66,5 @@ export const useAuth = () => {
         }
     }
 
-    // useEffect(() => { 
-
-    //     const getAndSetUser = async () => {
-    //         try{
-    //             const data = await getMe()
-    //             setUser(data.user)
-    //         }
-    //         catch(err){
-    //             console.error(err)
-    //         }
-    //         finally{
-    //             setLoading(false)
-    //         }
-    //     }
-    //     getAndSetUser()
-    // }, [])
-
-    return {user, loading, handleLogin, handleRegister, handleLogout}
+    return {user, loading, authError, handleLogin, handleRegister, handleLogout}
 }

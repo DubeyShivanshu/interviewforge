@@ -110,8 +110,8 @@ interviewforge/
   - 4 Behavioral Questions with STAR method answers
   - 4 Skill Gaps with severity (low / medium / high)
   - 5-Day Preparation Plan with daily tasks
-- **📊 Report Viewer** — Interactive accordion UI with score ring and skill gap tags.
-- **📑 AI Resume PDF** — Generates a tailored, ATS-friendly single-page resume PDF using Puppeteer.
+- **📊 Report Viewer** — Interactive accordion UI with score ring, skill gap tags, and easy navigation.
+- **📑 AI Resume PDF** — Generates a tailored, ATS-friendly, single-page resume PDF strictly formatted via Puppeteer and custom CSS injection.
 - **📋 Recent Reports** — Home page lists all previously generated reports.
 
 ---
@@ -213,14 +213,15 @@ Interview.jsx fetches report by ID and renders accordion UI
 
 ---
 
-## 🔒 Security
+## 🔒 Security & Architecture Robustness
 
-- Passwords hashed with **bcrypt** (salt rounds: 10)
-- **JWT tokens** stored in localStorage, attached via Axios request interceptor
-- Logged-out tokens stored in a **blacklist collection** to prevent reuse
-- Protected routes checked on both frontend (`Protected.jsx`) and backend (`auth.middleware.js`)
-- File uploads validated by **Multer** — only `.pdf` files accepted
-
+- Passwords hashed with **bcrypt** (salt rounds: 10).
+- **JWT tokens** stored in HTTP-only cookies (or localStorage), attached via Axios request interceptors.
+- **Global Error Handling & Interceptors** — Automatic redirects on 401 Unauthorized errors for expired sessions.
+- **TTL Indexes** — Logged-out tokens stored in a **blacklist collection** with an automatic 1-hour TTL sweep to prevent DB bloat.
+- **Strict Data Integrity** — Mongoose Schema validation strictly enforces email regex formats and password lengths before database hits.
+- **File Security** — Uploads are strictly validated by **Multer** server-side, immediately rejecting any non-PDF mimetypes.
+- **Graceful Failures** — API utilizes exponential backoff/retry logic to handle AI usage spikes, and the Express server prevents "zombie" startups if MongoDB fails to connect.
 ---
 
 ## 📁 Key Files Explained
@@ -247,4 +248,4 @@ Interview.jsx fetches report by ID and renders accordion UI
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).

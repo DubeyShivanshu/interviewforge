@@ -9,50 +9,55 @@ const tokenBlacklistModel = require('../models/blacklist.model');
  * @access Public
  */
 async function registerUserController(req, res){
-    const {username, email, password} = req.body;
+    try {
+        const {username, email, password} = req.body;
 
-    //if any of the fields are missing, return an error
-    if(!username || !email || !password){
-        return res.status(400).json({message: 'Please provide username, email and password'});
+        //if any of the fields are missing, return an error
+        if(!username || !email || !password){
+            return res.status(400).json({message: 'Please provide username, email and password'});
+        }
+
+        //check if the user already exists
+        const isUserAlreadyExists = await userModel.findOne({
+            $or: [{username}, {email}]
+        })
+        if(isUserAlreadyExists){
+            return res.status(400).json({message: 'User with the same username or email already exists'});
+        }
+
+        //hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        //create the user and save to DB
+        const user = new userModel({
+            username,
+            email,
+            password: hashedPassword
+        });
+        await user.save();
+
+        //Create a JWT token for the user
+        const token = jwt.sign(
+            {id: user._id, username: user.username},
+            process.env.JWT_SECRET, 
+            {expiresIn: '1h'});
+        
+        //store the token in cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none'
+        }).status(201).json({message: 'User registered successfully',
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }    
+        });
+    } catch (error) {
+        console.error('Register Error:', error.message);
+        res.status(500).json({ message: 'Something went wrong. Please try again.' });
     }
-
-    //check if the user already exists
-    const isUserAlreadyExists = await userModel.findOne({
-        $or: [{username}, {email}]
-    })
-    if(isUserAlreadyExists){
-        return res.status(400).json({message: 'User with the same username or email already exists'});
-    }
-
-    //hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    
-    //create the user and save to DB
-    const user = new userModel({
-        username,
-        email,
-        password: hashedPassword
-    });
-    await user.save();
-
-    //Create a JWT token for the user
-    const token = jwt.sign(
-        {id: user._id, username: user.username},
-        process.env.JWT_SECRET, 
-        {expiresIn: '1h'});
-    
-    //store the token in cookie
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none'
-    }).status(201).json({message: 'User registered successfully',
-        user: {
-            id: user._id,
-            username: user.username,
-            email: user.email
-        }    
-    });
 }
 
 /**
@@ -61,41 +66,46 @@ async function registerUserController(req, res){
  * @access Public
  */
 async function loginUserController(req, res){
-    const {email, password} = req.body;
+    try {
+        const {email, password} = req.body;
 
-    //search for the user by email in DB, if not found return an error
-    const user = await userModel.findOne({email});
+        //search for the user by email in DB, if not found return an error
+        const user = await userModel.findOne({email});
 
-    if(!user){
-        return res.status(400).json({message: 'Invalid email or password'});
+        if(!user){
+            return res.status(400).json({message: 'Invalid email or password'});
+        }
+
+        //compare curr. password with the hashed password in DB, if not match return an error
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+
+        if(!isPasswordValid){
+            return res.status(400).json({message: 'Invalid email or password'});
+        }
+
+        //Create a JWT token for the user
+        const token = jwt.sign(
+            {id: user._id, username: user.username},
+            process.env.JWT_SECRET, 
+            {expiresIn: '1h'}
+        );
+        //store the token in cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none' 
+        }).status(200).json({message: 'User logged in successfully',
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }    
+        });
+    } catch (error) {
+        console.error('Login Error:', error.message);
+        res.status(500).json({ message: 'Something went wrong. Please try again.' });
     }
-
-    //compare curr. password with the hashed password in DB, if not match return an error
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if(!isPasswordValid){
-        return res.status(400).json({message: 'Invalid email or password'});
-    }
-
-    //Create a JWT token for the user
-    const token = jwt.sign(
-        {id: user._id, username: user.username},
-        process.env.JWT_SECRET, 
-        {expiresIn: '1h'}
-    );
-    //store the token in cookie
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'none' 
-    }).status(200).json({message: 'User logged in successfully',
-        token,
-        user: {
-            id: user._id,
-            username: user.username,
-            email: user.email
-        }    
-    });
 }
 
 /**
@@ -104,14 +114,19 @@ async function loginUserController(req, res){
  * @access Public
  */
 async function logoutUserController(req, res){
-    const token = req.cookies.token;
+    try {
+        const token = req.cookies.token;
 
-    //if token is present, add it to blacklist 
-    if(token){
-        await tokenBlacklistModel.create({ token });
+        //if token is present, add it to blacklist 
+        if(token){
+            await tokenBlacklistModel.create({ token });
+        }
+        //clear the cookie
+        res.clearCookie('token').status(200).json({message: 'User logged out successfully'});
+    } catch (error) {
+        console.error('Logout Error:', error.message);
+        res.status(500).json({ message: 'Something went wrong during logout.' });
     }
-    //clear the cookie
-    res.clearCookie('token').status(200).json({message: 'User logged out successfully'});
 }
 
 /**
@@ -120,15 +135,23 @@ async function logoutUserController(req, res){
  * @access Private
  */
 async function getMeController(req, res){
-    const user = await userModel.findById(req.user.id);
-    res.status(200).json({
-        message: 'User details fetched successfully',
-        user: {
-            id: user._id,
-            username: user.username,
-            email: user.email
+    try {
+        const user = await userModel.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
         }
-    });
+        res.status(200).json({
+            message: 'User details fetched successfully',
+            user: {
+                id: user._id,
+                username: user.username,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        console.error('GetMe Error:', error.message);
+        res.status(500).json({ message: 'Something went wrong.' });
+    }
 }
 
-module.exports = { registerUserController, loginUserController, logoutUserController, getMeController };
+module.exports = { registerUserController, loginUserController, logoutUserController, getMeController };
