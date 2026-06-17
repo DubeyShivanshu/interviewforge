@@ -10,6 +10,7 @@ const Home = () => {
     const { loading, generateReport, reports } = useInterview()
     const [jobDescription, setJobDescription] = useState("")
     const [selfDescription, setSelfDescription] = useState("")
+    const [isGenerating, setIsGenerating] = useState(false)
 
     const resumeInputRef = useRef()
 
@@ -34,14 +35,16 @@ const Home = () => {
             return
         }
 
+        setIsGenerating(true)
         const data = await generateReport({jobDescription, selfDescription, resumeFile})
+        setIsGenerating(false)
 
         if (data?._id) {
             navigate(`/interview/${data._id}`)
         }
     }
 
-    if(loading){
+    if(isGenerating){
         return(
             <main className='loading-screen'>
                 <div className='dots'>
@@ -111,13 +114,13 @@ e.g. "Senior Frontend Engineer at Google requires proficiency in React, TypeScri
                         />
                     </div>
 
-                    {/* disabled while loading to prevent multiple simultaneous requests */}
+                    {/* disabled while generating to prevent multiple simultaneous requests */}
                     <button
-                        className={`generate-btn${loading ? ' generate-btn--loading' : ''}`}
+                        className={`generate-btn${isGenerating ? ' generate-btn--loading' : ''}`}
                         onClick={handleGenerateReport}
-                        disabled={loading}
+                        disabled={isGenerating}
                     >
-                        {loading ? 'Generating...' : 'Generate Interview Report'}
+                        {isGenerating ? 'Generating...' : 'Generate Interview Report'}
                     </button>
                 </div>
             </div>
