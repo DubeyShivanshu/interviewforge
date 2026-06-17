@@ -46,7 +46,8 @@ async function registerUserController(req, res){
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none'
+            sameSite: 'none',
+            partitioned: true
         }).status(201).json({message: 'User registered successfully',
             user: {
                 id: user._id,
@@ -93,7 +94,8 @@ async function loginUserController(req, res){
         res.cookie('token', token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'none' 
+            sameSite: 'none',
+            partitioned: true
         }).status(200).json({message: 'User logged in successfully',
             token,
             user: {
