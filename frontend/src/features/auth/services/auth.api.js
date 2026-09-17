@@ -4,7 +4,7 @@ import axios from "axios"
 const api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
-    timeout: 8000   // fail fast — prevents hanging on Render cold start
+    timeout: 30000   // fail fast — prevents hanging on Render cold start
 }) 
 
 //APIs to interact with backend APIs

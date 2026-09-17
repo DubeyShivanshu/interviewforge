@@ -19,7 +19,7 @@ async function registerUserController(req, res){
 
         //check if the user already exists
         const isUserAlreadyExists = await userModel.findOne({
-            $or: [{username}, {email}]
+            $or: [{username}, {email: email.trim().toLowerCase()}]
         })
         if(isUserAlreadyExists){
             return res.status(400).json({message: 'User with the same username or email already exists'});
@@ -71,7 +71,7 @@ async function loginUserController(req, res){
         const {email, password} = req.body;
 
         //search for the user by email in DB, if not found return an error
-        const user = await userModel.findOne({email});
+        const user = await userModel.findOne({email: email.trim().toLowerCase()});
 
         if(!user){
             return res.status(400).json({message: 'Invalid email or password'});
@@ -124,7 +124,12 @@ async function logoutUserController(req, res){
             await tokenBlacklistModel.create({ token });
         }
         //clear the cookie
-        res.clearCookie('token').status(200).json({message: 'User logged out successfully'});
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            partitioned: true
+        }).status(200).json({message: 'User logged out successfully'});
     } catch (error) {
         console.error('Logout Error:', error.message);
         res.status(500).json({ message: 'Something went wrong during logout.' });
@@ -156,4 +161,4 @@ async function getMeController(req, res){
     }
 }
 
-module.exports = { registerUserController, loginUserController, logoutUserController, getMeController };
+module.exports = { registerUserController, loginUserController, logoutUserController, getMeController };
