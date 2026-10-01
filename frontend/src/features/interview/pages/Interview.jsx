@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import "../style/interview.scss";
+import Loader from "../../../components/Loader";
 import { useInterview } from "../hooks/useInterview.js"
 import { useParams, useNavigate } from "react-router-dom"
 import { useAuth } from "../../auth/hooks/useAuth"
@@ -56,7 +57,7 @@ const DayCard = ({ item }) => (
 // Main component
 const Interview = () => {
   const [active, setActive] = useState('technical');
-  const { report, getReportById, loading, pdfLoading, getResumePdf } = useInterview();  
+  const { report, loading, pdfLoading, getResumePdf } = useInterview();  
   const { interviewId } = useParams()
   const navigate = useNavigate()
   const { handleLogout } = useAuth()
@@ -67,17 +68,20 @@ const Interview = () => {
   }
 
   // Loading / null guard — prevents crash before report arrives
+  // if (loading || !report) {
+  //   return (
+  //     <div className="interview interview--loading">
+  //       <div className="loading-state">
+  //         <span className="loading-state__dot" />
+  //         <span className="loading-state__dot" />
+  //         <span className="loading-state__dot" />
+  //         <div className="spinner" style={{ marginTop: '1rem' }}></div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   if (loading || !report) {
-    return (
-      <div className="interview interview--loading">
-        <div className="loading-state">
-          <span className="loading-state__dot" />
-          <span className="loading-state__dot" />
-          <span className="loading-state__dot" />
-          <div className="spinner" style={{ marginTop: '1rem' }}></div>
-        </div>
-      </div>
-    );
+    return <Loader text="Loading your report..." />;
   }
 
   // scoreColor — drives ring colour class

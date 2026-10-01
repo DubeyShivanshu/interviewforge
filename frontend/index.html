@@ -5,6 +5,23 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>InterviewForge</title>
+
+    <!-- Start downloading the login background immediately -->
+    <!-- <link rel="preload" as="image" href="/bg.jpg" fetchpriority="high" /> -->
+
+    <!-- Fonts: Inter (headings) + JetBrains Mono (labels and body text) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Dark fallback so the page isn't white while the image loads -->
+    <style>
+      /* html, body { background-color: #0d0d12; } */
+      html, body { background-color: #1a1a1a; }
+    </style>
   </head>
   <body>
     <div id="root"></div>

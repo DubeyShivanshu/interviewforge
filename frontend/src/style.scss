@@ -1,41 +1,152 @@
-*{
-    margin: 0%;
-    padding: 0%;
+// *{
+//     margin: 0%;
+//     padding: 0%;
+//     box-sizing: border-box;
+// }
+
+// html,
+// body,
+// #root {
+//     height: 100%;
+//     width: 100%;
+//     //font-family: 'Poppins', sans-serif;
+//     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+//     background-color: #161616;
+//     color: whitesmoke;
+// }
+
+// /* ── Global Spinner ── */
+// .spinner {
+//     width: 48px;
+//     height: 48px;
+//     border: 4px solid rgba(255, 255, 255, 0.15);
+//     border-top: 4px solid #4da3ff;
+//     border-radius: 50%;
+//     animation: global-spin 0.8s linear infinite;
+// }
+
+// @keyframes global-spin {
+//     0%   { transform: rotate(0deg); }
+//     100% { transform: rotate(360deg); }
+// }
+
+// /* Full-screen spinner wrapper */
+// .spinner-overlay {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     justify-content: center;
+//     gap: 1.2rem;
+//     height: 100vh;
+//     width: 100%;
+//     background-color: #161616;
+// }
+
+// .loader-text {
+//     font-size: 0.85rem;
+//     letter-spacing: 0.08em;
+//     color: rgba(255, 255, 255, 0.6);
+// }
+
+
+@use './styles/tokens' as *;
+
+*, *::before, *::after {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
-html,
-body,
-#root {
-    height: 100%;
+html { scroll-behavior: smooth; }
+
+html, body, #root {
+    min-height: 100%;
     width: 100%;
-    //font-family: 'Poppins', sans-serif;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    background-color: #161616;
-    color: whitesmoke;
 }
 
-/* ── Global Spinner ── */
+body {
+    background-color: $bg;
+    color: $text;
+    font-family: $sans;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+
+    // faint vertical column lines across the whole app
+    &::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        background-image: repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.022) 0,
+            rgba(255, 255, 255, 0.022) 1px,
+            transparent 1px,
+            transparent 160px
+        );
+    }
+}
+
+::selection { background: $rust; color: #f3ebe0; }
+
+:focus-visible {
+    outline: 1px solid $rust-bright;
+    outline-offset: 3px;
+}
+
+button { font: inherit; }
+
+// thin scrollbars
+* { scrollbar-width: thin; scrollbar-color: $dim transparent; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: $dim; border-radius: 3px; }
+
+// Rotating sphere (see SphereBackground.jsx)
+.sphere-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+// Shared loader (Loader.jsx)
 .spinner {
-    width: 48px;
-    height: 48px;
-    border: 4px solid rgba(255, 255, 255, 0.15);
-    border-top: 4px solid #4da3ff;
+    width: 44px;
+    height: 44px;
+    border: 2px solid $line;
+    border-top-color: $rust-bright;
     border-radius: 50%;
-    animation: global-spin 0.8s linear infinite;
+    animation: global-spin 0.9s linear infinite;
+}
+
+.spinner-overlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    height: 100vh;
+    width: 100%;
+    background: transparent;      // sphere stays visible behind the loader
+}
+
+.loader-text {
+    @include mono-label;
 }
 
 @keyframes global-spin {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* Full-screen spinner wrapper */
-.spinner-overlay {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100%;
-    background-color: #161616;
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }

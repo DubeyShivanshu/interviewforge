@@ -1,13 +1,14 @@
 import React from 'react';
 import {useState, useRef} from "react"
 import "../style/home.scss";
+import Loader from "../../../components/Loader";
 import {useInterview} from "../hooks/useInterview.js"
 import {useNavigate} from "react-router-dom"
 import {useAuth} from "../../auth/hooks/useAuth"
 
 const Home = () => {
 
-    const { loading, generateReport, reports } = useInterview()
+    const { generateReport, reports } = useInterview()
     const [jobDescription, setJobDescription] = useState("")
     const [selfDescription, setSelfDescription] = useState("")
     const [isGenerating, setIsGenerating] = useState(false)
@@ -44,14 +45,17 @@ const Home = () => {
         }
     }
 
+    // if(isGenerating){
+    //     return(
+    //         <main className='loading-screen'>
+    //             <div className='dots'>
+    //                 <h1>Generating your interview plan</h1>
+    //             </div>
+    //     </main>
+    //     )
+    // }
     if(isGenerating){
-        return(
-            <main className='loading-screen'>
-                <div className='dots'>
-                    <h1>Generating your interview plan</h1>
-                </div>
-        </main>
-        )
+        return <Loader text="Generating your interview plan..." />;
     }
 
     return ( 

@@ -1,39 +1,36 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import "../auth.form.scss"
-import {useNavigate, Link} from "react-router-dom"
-import {useAuth} from "../hooks/useAuth"   
+import { useNavigate, Link, Navigate } from "react-router-dom"
+import { useAuth } from "../hooks/useAuth"
 
 const Login = () => {
 
-    const {loading, handleLogin, authError} = useAuth()
-
-    //to navigate to homepage after login
+    const { user, loading, handleLogin, authError } = useAuth()
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [submitting, setSubmitting] = useState(false)   // local, only for the login button
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setSubmitting(true);
         const success = await handleLogin({ email, password });
+        setSubmitting(false);
 
-        if(success){
+        if (success) {
             navigate("/");
         }
     }
 
-    if(loading){
-        return (<main>
-            <div className="form-container">
-                <div className="loader"></div>
-            </div>
-        </main>)
+    // Already logged in (once the background auth check finishes) -> go home
+    if (!loading && user) {
+        return <Navigate to="/" replace />
     }
 
-    return ( 
-        <main>
+    // No full-page loader here: show the form immediately
+    return (
+        <main className="auth-page">
             <div className="form-container">
 
                 <h1>Login</h1>
@@ -43,30 +40,34 @@ const Login = () => {
 
                     <div className='inputGroup'>
                         <label htmlFor='email'>Email</label>
-                        <input 
-                            onChange={(e) => { setEmail(e.target.value) }}
-                            type='email' 
-                            id='email' 
-                            name='email' 
-                            placeholder='Enter your email' 
+                        <input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            type='email'
+                            id='email'
+                            name='email'
+                            placeholder='Enter your email'
+                            required
                         />
                     </div>
 
                     <div className='inputGroup'>
                         <label htmlFor='password'>Password</label>
-                        <input 
-                            onChange={(e) => { setPassword(e.target.value) }}
-                            type='password' 
-                            id='password' 
-                            name='password' 
-                            placeholder='Enter your password' 
+                        <input
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            type='password'
+                            id='password'
+                            name='password'
+                            placeholder='Enter your password'
+                            required
                         />
                     </div>
 
                     {authError && <p className="error-msg">{authError}</p>}
 
-                    <button type="submit" className="button primary-button" disabled={loading}>
-                        Login
+                    <button type="submit" className="button primary-button" disabled={submitting}>
+                        {submitting ? "Logging in..." : "Login"}
                     </button>
 
                 </form>
@@ -77,7 +78,7 @@ const Login = () => {
 
             </div>
         </main>
-     );
+    );
 }
 
 export default Login;

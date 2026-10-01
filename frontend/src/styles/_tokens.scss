@@ -1,0 +1,113 @@
+// ─────────────────────────────────────────────
+// Shared design tokens: every stylesheet @use's this file.
+// Change a value here and the whole app updates.
+// ─────────────────────────────────────────────
+
+// Colour
+$bg:            #1a1a1a;                       // page base (charcoal)
+$surface:       rgba(31, 31, 30, 0.9);         // panels (no blur, much cheaper to scroll)
+$surface-hover: rgba(46, 45, 43, 0.88);        // hovered cells
+$field:         rgba(255, 255, 255, 0.035);    // inputs
+$line:          rgba(255, 255, 255, 0.08);
+$line-strong:   rgba(255, 255, 255, 0.16);
+$rust:          #8f3a2a;                       // buttons
+$rust-bright:   #c2513a;                       // icons, brackets, focus
+$rust-dim:      rgba(194, 81, 58, 0.12);
+$rust-line:     rgba(194, 81, 58, 0.4);
+$text:          #d9d3c9;                       // cream
+$muted:         #8f8a82;
+$dim:           #66625c;
+
+// Status colours (match score, severity)
+$ok:   #8bb58a;
+$warn: #d0a24a;
+$bad:  #d4574a;
+
+// Type
+$sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+$mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+// ── Mixins ──────────────────────────────────
+// Big thin uppercase headline
+@mixin display {
+    font-family: $sans;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    color: $text;
+}
+
+// Small spaced monospace label, e.g. [ EMAIL ]
+@mixin mono-label {
+    font-family: $mono;
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: $muted;
+}
+
+// Monospace uppercase body copy
+@mixin mono-body {
+    font-family: $mono;
+    font-size: 0.78rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.9;
+    color: $muted;
+}
+
+// Panel (translucent, no blur so scrolling stays smooth)
+@mixin frame($radius: 18px) {
+    background: $surface;
+    border: 1px solid $line;
+    border-radius: $radius;
+}
+
+// Four rust corner marks. Uses ::before, so don't use ::before on the same element.
+@mixin corners($size: 16px, $inset: 14px, $color: $rust-line) {
+    &::before {
+        content: '';
+        position: absolute;
+        inset: $inset;
+        pointer-events: none;
+        background:
+            linear-gradient($color, $color) top left     / #{$size} 1px no-repeat,
+            linear-gradient($color, $color) top left     / 1px #{$size} no-repeat,
+            linear-gradient($color, $color) top right    / #{$size} 1px no-repeat,
+            linear-gradient($color, $color) top right    / 1px #{$size} no-repeat,
+            linear-gradient($color, $color) bottom left  / #{$size} 1px no-repeat,
+            linear-gradient($color, $color) bottom left  / 1px #{$size} no-repeat,
+            linear-gradient($color, $color) bottom right / #{$size} 1px no-repeat,
+            linear-gradient($color, $color) bottom right / 1px #{$size} no-repeat;
+    }
+}
+
+// Cell that lightens and gets a rust top line on hover. Uses ::after.
+@mixin hover-card {
+    position: relative;
+    transition: background 0.3s ease, border-color 0.3s ease, transform 0.25s ease;
+
+    &::after {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: $rust-bright;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.35s ease;
+    }
+
+    &:hover {
+        background: $surface-hover;
+        border-color: $line-strong;
+        transform: translateY(-3px);
+
+        &::after { transform: scaleX(1); }
+    }
+}

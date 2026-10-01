@@ -1,8 +1,7 @@
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import "../auth.form.scss"
-import {useNavigate, Link} from "react-router-dom"
-import {useAuth} from "../hooks/useAuth"
+import { useNavigate, Link, Navigate } from "react-router-dom"
+import { useAuth } from "../hooks/useAuth"
 
 const Register = () => {
 
@@ -10,30 +9,30 @@ const Register = () => {
     const [username, setUsername] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const [submitting, setSubmitting] = useState(false)   // local, only for the register button
 
-    const {loading, handleRegister, authError} = useAuth()
+    const { user, loading, handleRegister, authError } = useAuth()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        setSubmitting(true);
         const success = await handleRegister({ username, email, password });
+        setSubmitting(false);
 
         //backend already sets the auth cookie on register, so navigate directly to home instead of forcing a second login
-        if(success){
+        if (success) {
             navigate("/");
         }
     }
 
-    if(loading){
-        return (<main>
-            <div className="form-container">
-                <div className="loader"></div>
-            </div>
-        </main>)
+    // Already logged in (once the background auth check finishes) -> go home
+    if (!loading && user) {
+        return <Navigate to="/" replace />
     }
 
-    return ( 
-        <main>
+    // No full-page loader: show the form immediately
+    return (
+        <main className="auth-page">
             <div className="form-container">
 
                 <h1>Register</h1>
@@ -43,41 +42,47 @@ const Register = () => {
 
                     <div className='inputGroup'>
                         <label htmlFor='username'>Username</label>
-                        <input 
-                            onChange={(e) => {setUsername(e.target.value)}}
-                            type='text' 
-                            id='username' 
-                            name='username' 
-                            placeholder='Enter your username' 
+                        <input
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            type='text'
+                            id='username'
+                            name='username'
+                            placeholder='Enter your username'
+                            required
                         />
                     </div>
 
                     <div className='inputGroup'>
                         <label htmlFor='email'>Email</label>
-                        <input 
-                            onChange={(e) => {setEmail(e.target.value)}}
-                            type='email' 
-                            id='email' 
-                            name='email' 
-                            placeholder='Enter your email' 
+                        <input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            type='email'
+                            id='email'
+                            name='email'
+                            placeholder='Enter your email'
+                            required
                         />
                     </div>
 
                     <div className='inputGroup'>
                         <label htmlFor='password'>Password</label>
-                        <input 
-                            onChange={(e) => {setPassword(e.target.value)}}
-                            type='password' 
-                            id='password' 
-                            name='password' 
-                            placeholder='Enter your password' 
+                        <input
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            type='password'
+                            id='password'
+                            name='password'
+                            placeholder='Enter your password'
+                            required
                         />
                     </div>
 
                     {authError && <p className="error-msg">{authError}</p>}
 
-                    <button type="submit" className="button primary-button" disabled={loading}>
-                        Register
+                    <button type="submit" className="button primary-button" disabled={submitting}>
+                        {submitting ? "Creating account..." : "Register"}
                     </button>
 
                 </form>
