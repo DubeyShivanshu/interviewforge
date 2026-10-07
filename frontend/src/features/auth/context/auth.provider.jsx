@@ -13,10 +13,13 @@ export const AuthProvider = ({ children }) => {
             try {
                 const data = await getMe();
                 setUser(data?.user ?? null);
+                if(data?.user) localStorage.setItem("if_session", "1"); 
             } catch (err) {
                 // 401 is expected if the user isn't logged in yet, so don't log it as an error
                 if (err.response?.status !== 401) {
                     console.error("Error fetching user data:", err);
+                } else {
+                    localStorage.removeItem("if_session");  
                 }
                 setUser(null);
             } finally {

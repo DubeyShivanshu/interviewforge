@@ -20,6 +20,8 @@ app.use(express.json());
 //Use cookie-parser middleware to parse cookies in incoming requests
 app.use(cookieParser());
 
+app.get("/api/health", (req, res) => res.json({ ok: true }));
+
 //Require routes from auth.routes.js and interview.routes.js
 const authRouter = require('./routes/auth.routes');
 const interviewRouter = require('./routes/interview.routes');

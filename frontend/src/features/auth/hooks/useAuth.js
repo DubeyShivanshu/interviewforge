@@ -17,6 +17,7 @@ export const useAuth = () => {
             const data = await login({email, password})
             if(data){
                 setUser(data.user)
+                localStorage.setItem("if_session", "1") 
                 return true
             } 
         }
@@ -38,6 +39,7 @@ export const useAuth = () => {
             const data = await register({username, email, password})
             if(data){
                 setUser(data.user)
+                localStorage.setItem("if_session", "1") 
                 return true
             } 
         }
@@ -56,6 +58,7 @@ export const useAuth = () => {
         try{
             setLoading(true)
             await logout()
+            localStorage.removeItem("if_session")  
             setUser(null)
         }
         catch(err){

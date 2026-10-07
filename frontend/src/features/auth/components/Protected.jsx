@@ -15,6 +15,13 @@ const Protected = ({children}) => {
     //     )
     // }
 
+    // returning user: show the page now, verify in the background   // ← ADD
+    if (loading) {
+        return localStorage.getItem("if_session")
+            ? children
+            : <Navigate to="/login" replace />;
+    }
+
     if(loading){
         return <Loader />
     }
